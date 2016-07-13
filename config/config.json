@@ -1,0 +1,14 @@
+{
+  "development": {
+    "storage": "db/wat_dev.sqlite",
+    "dialect": "sqlite"
+  },
+  "test": {
+    "storage": "db/wat_test.sqlite",
+    "dialect": "sqlite"
+  },
+  "production": {
+    "storage": "db/wat_prod.sqlite",
+    "dialect": "sqlite"
+  }
+}
