@@ -5,6 +5,10 @@ var should = chai.should();
 
 chai.use(chaiHttp);
 
+server.request.isAuthenticated = function() {
+  return true;
+}
+
 describe('Injuries', function() {
   var id = 0, commentId = 0;
 

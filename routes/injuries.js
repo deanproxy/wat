@@ -1,9 +1,8 @@
 var models = require('../models');
 var express = require('express');
-var auth = require('./auth-middleware');
 var router = express.Router();
 
-router.post('/', auth.isLoggedIn, function(req, res) {
+router.post('/', function(req, res) {
   models.Injury.create({
     description: req.body.description
   }).then(function(injury) {
@@ -11,7 +10,7 @@ router.post('/', auth.isLoggedIn, function(req, res) {
   });
 });
 
-router.get('/:id', auth.isLoggedIn, function(req, res) {
+router.get('/:id', function(req, res) {
   models.Injury.findById(req.params.id)
     .then(function(injury) {
       if (!injury) {
@@ -23,7 +22,7 @@ router.get('/:id', auth.isLoggedIn, function(req, res) {
     });
 });
 
-router.put('/:id', auth.isLoggedIn, function(req, res) {
+router.put('/:id', function(req, res) {
   models.Injury.findById(req.params.id)
     .then(function(injury) {
       if (!injury) {
@@ -41,7 +40,7 @@ router.put('/:id', auth.isLoggedIn, function(req, res) {
     });
 });
 
-router.delete('/:id', auth.isLoggedIn, function(req, res) {
+router.delete('/:id', function(req, res) {
   models.Injury.findById(req.params.id)
     .then(function(injury) {
       if (!injury) {
@@ -58,7 +57,7 @@ router.delete('/:id', auth.isLoggedIn, function(req, res) {
     });
 });
 
-router.post('/:id/comments', auth.isLoggedIn, function(req, res) {
+router.post('/:id/comments', function(req, res) {
   models.Injury.findById(req.params.id, {
     include: [models.Comment]
   }).then(function(injury) {
@@ -75,7 +74,7 @@ router.post('/:id/comments', auth.isLoggedIn, function(req, res) {
   });
 });
 
-router.delete('/:id/comments/:comment_id', auth.isLoggedIn, function(req, res) {
+router.delete('/:id/comments/:comment_id', function(req, res) {
   models.Comment.findById(req.params.comment_id)
     .then(function(comment) {
       if (!comment) {

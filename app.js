@@ -49,6 +49,35 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/login', function(req, res) {
+  res.render('login', {
+    user: req.user
+  });
+});
+
+app.get('/auth/google',
+  passport.authenticate('google', {scope: ['email profile']}));
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: '/login'
+  }),
+  function(req, res) {
+    res.redirect('/');
+  });
+
+app.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect('/');
+});
+
+/* Authenticate for all routes, except those above this one. */
+app.all('*', function(req, res, next) {
+  if (req.isAuthenticated()) { 
+    return next(); 
+  }
+  res.redirect('/login');
+});
 
 app.use('/', routes);
 app.use('/injuries', injuries);
