@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var authConfig = require('./config/auth');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var GithubStrategy = require('passport-github').Strategy;
 var session = require('express-session');
 
 var routes = require('./routes/index');
@@ -21,6 +22,11 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
+passport.use(new GithubStrategy(authConfig.github, 
+  function(request, accessToken, refreshToken, profile, done) {
+    return done(null, profile);
+  }
+));
 passport.use(new GoogleStrategy(authConfig.google, 
   function(request, accessToken, refreshToken, profile, done) {
     return done(null, profile);
@@ -55,9 +61,18 @@ app.get('/login', function(req, res) {
   });
 });
 
+app.get('/auth/github',
+  passport.authenticate('github', {scope: ['profile']}));
 app.get('/auth/google',
-  passport.authenticate('google', {scope: ['email profile']}));
+  passport.authenticate('google', {scope: ['profile']}));
 
+app.get('/auth/github/callback',
+  passport.authenticate('github', {
+    failureRedirect: '/login'
+  }),
+  function(req, res) {
+    res.redirect('/');
+  });
 app.get('/auth/google/callback',
   passport.authenticate('google', {
     failureRedirect: '/login'
