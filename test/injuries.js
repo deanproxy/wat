@@ -26,9 +26,9 @@ describe('Injuries', function() {
       });
   });
 
-  it("should list all injuries on / GET", function(done) {
+  it("should list all injuries on /injuries GET", function(done) {
     chai.request(server)
-      .get('/')
+      .get('/injuries')
       .end(function(err, res) {
         res.should.have.status(200);
         res.should.be.json;
