@@ -102,7 +102,10 @@ class Index extends React.Component {
 
   add(evt) {
     var modalDiv = document.getElementById('modal');
-
+    // Clear previous modal data if there is any...
+    if (modalDiv.firstChild) {
+      modalDiv.removeChild(modalDiv.firstChild);
+    }
     this.modal = new Bootstrap.Modal(modalDiv);
     ReactDOM.render(<Add onClick={this.addInjury}/>, modalDiv);
     this.modal.open();
