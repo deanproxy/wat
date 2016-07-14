@@ -37,6 +37,28 @@ function ajax(type, url, data) {
 class Add extends React.Component {
   constructor(props) {
     super(props);
+    this.change = this.change.bind(this);
+    this.state = {
+      injury: {
+        id: 0,
+        description: ''
+      }
+    }
+  }
+
+  componentDidMount() {
+    var that = this;
+    if (this.props.injuryId) {
+      ajax('GET', '/injuries/' + this.props.injuryId)
+        .then(function(data) {
+          that.setState({injury:data});
+        });
+    }
+  }
+
+  change(evt) {
+    this.state.injury.description = evt.target.value;
+    this.setState({injury: this.state.injury});
   }
 
   render() {
@@ -45,7 +67,9 @@ class Add extends React.Component {
         <div className="modal-body">
           <h2>Add A New Old Man Incident</h2>
           <form id="add-form">
-            <textarea name="description" placeholder="Tell us your sad, old man story..." required></textarea>
+            <input type="hidden" name="injuryId" defaultValue={this.state.injury.id}/>
+            <textarea name="description" placeholder="Tell us your sad, old man story..." required 
+              value={this.state.injury.description} onChange={this.change}></textarea>
           </form>
         </div>
         <div className="modal-footer">
@@ -67,7 +91,7 @@ class Index extends React.Component {
       injuries: []
     }
     this.removeInjury = this.removeInjury.bind(this);
-    this.add = this.add.bind(this);
+    this.showModal = this.showModal.bind(this);
     this.addInjury = this.addInjury.bind(this);
   }
 
@@ -82,10 +106,19 @@ class Index extends React.Component {
   addInjury(evt) {
     var form  = document.getElementById('add-form'),
         data  = serialize(form),
-        modal = this.props.modal,
         that  = this;
 
-    ajax('POST', '/injuries', data)
+    var opts = {
+      method: 'POST',
+      url: '/injuries'
+    };
+
+    if (data.injuryId) {
+      opts.url = opts.url.concat('/' + data.injuryId);
+      opts.method = 'PUT'
+    }
+
+    ajax(opts.method, opts.url, data)
       .then(function(data) {
         ajax('GET', '/injuries')
           .then(function(data) {
@@ -99,15 +132,16 @@ class Index extends React.Component {
       });
   }
 
+  showModal(evt) {
+    var modalDiv = document.getElementById('modal'),
+        id = evt.target.dataset.injuryId;
 
-  add(evt) {
-    var modalDiv = document.getElementById('modal');
     // Clear previous modal data if there is any...
     if (modalDiv.firstChild) {
       modalDiv.removeChild(modalDiv.firstChild);
     }
     this.modal = new Bootstrap.Modal(modalDiv);
-    ReactDOM.render(<Add onClick={this.addInjury}/>, modalDiv);
+    ReactDOM.render(<Add onClick={this.addInjury} injuryId={id}/>, modalDiv);
     this.modal.open();
   }
 
@@ -132,7 +166,7 @@ class Index extends React.Component {
         return (
           <li key={item.id}>
             <span className="fa fa-wheelchair"></span> 
-            {item.description} 
+            <span className="description" onClick={this.showModal} data-injury-id={item.id}>{item.description}</span>
             <span className="date">{Moment(item.createdAt).fromNow()}</span>
             <a href data-item-id={item.id} onClick={that.removeInjury} title="Delete?">&times;</a>
           </li>
@@ -143,7 +177,7 @@ class Index extends React.Component {
       <div className="index">
         <div className="actions">
           <a className="btn btn-default" href="/logout">Logout</a>
-          <button className="btn btn-primary" onClick={this.add}>Add Old Man Incident</button>
+          <button className="btn btn-primary" onClick={this.showModal}>Add Old Man Incident</button>
         </div>
         <ul>
           {injuries}

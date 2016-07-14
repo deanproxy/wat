@@ -22,12 +22,17 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
-passport.use(new GithubStrategy(authConfig.github, 
+
+var github = authConfig.github.prod;
+if (app.get('env') === 'development' && authConfig.github.dev) {
+  github = authConfig.github.dev;
+}
+passport.use(new GithubStrategy(github, 
   function(request, accessToken, refreshToken, profile, done) {
     return done(null, profile);
   }
 ));
-passport.use(new GoogleStrategy(authConfig.google, 
+passport.use(new GoogleStrategy(authConfig.google.prod, 
   function(request, accessToken, refreshToken, profile, done) {
     return done(null, profile);
   }
