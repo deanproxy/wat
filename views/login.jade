@@ -1,7 +1,17 @@
 extends layout
 
 block content
-  h1 Login
-  a(href='/auth/github') Login With Github
-  br
-  a(href='/auth/google') Login With Google
+  div(class='login')
+    h1 login
+    ul
+      li 
+        a(href='/auth/github', class='btn btn-block btn-social btn-github') 
+          span(class='fa fa-github')
+          | Login With Github
+      li 
+        a(href='/auth/google', class='btn btn-block btn-social btn-google') 
+          span(class='fa fa-google')
+          | Login With Google
+
+    p your mission, should you choose to accept it, is to login with one of the methods above.
+

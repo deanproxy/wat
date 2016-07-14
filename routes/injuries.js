@@ -2,6 +2,12 @@ var models = require('../models');
 var express = require('express');
 var router = express.Router();
 
+router.get('/', function(req, res) {
+  models.Injury.findAll({order: 'createdAt DESC'}).then(function(injuries) {
+    res.json(injuries);
+  });
+});
+
 router.post('/', function(req, res) {
   models.Injury.create({
     description: req.body.description

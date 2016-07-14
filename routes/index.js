@@ -6,9 +6,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  models.Injury.findAll().then(function(injuries) {
-    res.json(injuries);
-  });
+  res.render('index');
 });
 
 module.exports = router;

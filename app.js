@@ -56,9 +56,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/login', function(req, res) {
-  res.render('login', {
-    user: req.user
-  });
+  res.render('login');
+});
+
+app.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect('/');
 });
 
 app.get('/auth/github',
@@ -80,11 +83,6 @@ app.get('/auth/google/callback',
   function(req, res) {
     res.redirect('/');
   });
-
-app.get('/logout', function(req, res) {
-  req.logout();
-  res.redirect('/');
-});
 
 /* Authenticate for all routes, except those above this one. */
 app.all('*', function(req, res, next) {
