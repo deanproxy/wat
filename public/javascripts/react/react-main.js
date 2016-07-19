@@ -113,7 +113,7 @@ class Index extends React.Component {
       url: '/injuries'
     };
 
-    if (data.injuryId) {
+    if (data.injuryId && data.injuryId !== '0') {
       opts.url = opts.url.concat('/' + data.injuryId);
       opts.method = 'PUT'
     }
@@ -166,8 +166,10 @@ class Index extends React.Component {
         return (
           <li key={item.id}>
             <span className="fa fa-wheelchair"></span> 
-            <span className="description" onClick={this.showModal} data-injury-id={item.id}>{item.description}</span>
-            <span className="date">{Moment(item.createdAt).fromNow()}</span>
+            <span className="description" onClick={this.showModal} data-injury-id={item.id}>
+              {item.description}
+              <span className="date">{Moment(item.createdAt).fromNow()}</span>
+            </span>
             <a href data-item-id={item.id} onClick={that.removeInjury} title="Delete?">&times;</a>
           </li>
         );
