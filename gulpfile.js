@@ -36,11 +36,13 @@ gulp.task('build', build);
 gulp.task('browserify', build);
 gulp.task('watch', watch);
 
-gulp.task('sass', function() {
+gulp.task('sass', buildSass);
+
+function buildSass() {
     gulp.src('public/stylesheets/**/*.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest('public/stylesheets/'))
-});
+}
 
 /* Build: Used to deploy minified code for production use. */
 function build() {
@@ -62,6 +64,7 @@ function build() {
 
 /* Watch: Used to watch files for changes for development use. */
 function watch() {
+    buildSass();
     gulp.watch('public/stylesheets/**/*.scss', ['sass']);
     return watchBundle.bundle()
         .on('error', gutil.log.bind(gutil, "Browserify Error"))
