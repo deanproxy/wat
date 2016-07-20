@@ -32,6 +32,7 @@
     "passport-google-oauth": "^1.0.0",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
+    "rest": "^2.0.0",
     "sequelize": "^3.23.4",
     "sequelize-cli": "^2.4.0",
     "serve-favicon": "~2.3.0",

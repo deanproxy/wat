@@ -35,9 +35,10 @@ router.put('/:id', function(req, res) {
         res.status(404);
         return res.json({error: "Injury not found with id " + req.params.id});
       }
+      console.log("Description: " + req.body.description);
       injury.description = req.body.description;
-      injury.save().then(function() {
-        res.json(injury.toJSON());
+      injury.save().then(function(data) {
+        res.json(data.toJSON());
       }).catch(function(err) {
         console.log(err);
         res.status(500);
