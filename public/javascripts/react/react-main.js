@@ -149,14 +149,16 @@ import Mime from 'rest/interceptor/mime';
       var injuries = this.state.injuries.map(
         (item) => {
           return (
-            <li key={item.id}>
-              <span className="fa fa-wheelchair"></span> 
-              <span className="description" onClick={this.showModal} data-injury-id={item.id}>
+            <div className="row" key={item.id}>
+              <div className="col-xs-11 description" onClick={this.showModal} data-injury-id={item.id}>
+                <span className="fa fa-wheelchair"></span>
                 {item.description}
                 <span className="date">{Moment(item.createdAt).fromNow()}</span>
-              </span>
-              <a href data-item-id={item.id} onClick={that.removeInjury} title="Delete?">&times;</a>
-            </li>
+              </div>
+              <div className="col-xs-1">
+                <a href data-item-id={item.id} onClick={that.removeInjury} title="Delete?">&times;</a>
+              </div>
+            </div>
           );
         }
       );
@@ -166,9 +168,9 @@ import Mime from 'rest/interceptor/mime';
             <a className="btn btn-default" href="/logout">Logout</a>
             <button className="btn btn-primary" onClick={this.showModal}>Add Old Man Incident</button>
           </div>
-          <ul>
+          <div className="container-fluid">
             {injuries}
-          </ul>
+          </div>
         </div>
       );
     }

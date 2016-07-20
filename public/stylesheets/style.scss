@@ -1,51 +1,45 @@
-
+body {
+    padding: 20px;
+}
 .index {
-    ul {
-        list-style: none;
-        width: 100%;
-        padding: 0;
-        margin: 20px 0 0;
-        position: relative;
-        li {
-            font-size: 1.5em;
-            border: 1px solid #444;
-            border-width: 1px 0;
-            padding: 20px;
+    .row {
+        border: 1px solid #444;
+        border-width: 1px 0;
+        padding: 20px;
+        font-size: 1.6em;
+        &:hover {
+            background-color: #333;
+        }
+        &:first-child {
+            border-top: none;
+        }
+        &:last-child {
+            border-bottom: none;
+        }
+        a {
+            position: absolute;
+            color: #666;
+            right: 10px;
             &:hover {
-                background-color: #333;
+                text-decoration: none;
+                color: #e74c3c;
             }
+        }
+
+        span {
             &:first-child {
-                border-top: none;
+                padding-right: 20px;
+                color: #e74c3c;
             }
-            &:last-child {
-                border-bottom: none;
+            &.description:hover {
+                cursor: pointer;
             }
-
-            a {
-                position: absolute;
+            &.date {
+                font-size: .7em;
                 color: #666;
-                right: 10px;
-                &:hover {
-                    text-decoration: none;
-                    color: #e74c3c;
-                }
-            }
-
-            span {
-                &:first-child {
-                    padding-right: 20px;
-                    color: #e74c3c;
-                }
-                &.description:hover {
-                    cursor: pointer;
-                }
-                &.date {
-                    font-size: .7em;
-                    color: #666;
-                    padding-right: 20px;
-                    margin: 5px 0 0 10px;
-                    display: inline-block;
-                }
+                padding-right: 20px;
+                margin: 5px 0 0 10px;
+                display: inline-block;
             }
         }
     }
@@ -53,8 +47,6 @@
 
 .login {
     padding: 20px;
-    width: 300px;
-    height: 350px;
     border: 1px solid #999; 
     margin: 20px auto;
     border-radius: 5px;
@@ -78,11 +70,12 @@
 }
 
 #react {
-    width: 650px;
     margin: 20px auto;
 }
 .actions {
     text-align: right;
+    margin-bottom: 20px;
+    padding: 0 25px;
 }
 .actions a {
     float: left;
@@ -94,4 +87,13 @@
 }
 .modal-dialog .modal-body h2 {
     text-align: left;
+}
+
+@media (max-width: 768px) {
+    .actions {
+        padding: 0 5px;
+    }
+    .index .row {
+        padding: 5px;
+    }
 }
