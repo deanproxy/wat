@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import { InjuryActions } from './actions/InjuryActions';
+import { InjuryStore } from './stores/InjuryStore';
+
 import Bootstrap from 'bootstrap.native';
 import Moment from 'moment';
-import Rest from 'rest';
-import Mime from 'rest/interceptor/mime';
 
 (function() {
-
-  var rest = Rest.wrap(Mime, { mime: 'application/json' });
 
   function serialize(form) {
     var data = new FormData(form);
@@ -31,11 +31,8 @@ import Mime from 'rest/interceptor/mime';
     }
 
     componentDidMount() {
-      var that = this;
-      if (this.props.injuryId) {
-        rest('injuries/' + this.props.injuryId).then(function(response) {
-          that.setState({injury: response.entity});
-        });
+      if (this.props.injury) {
+        this.state.injury = this.props.injury;
       }
     }
 
@@ -50,7 +47,7 @@ import Mime from 'rest/interceptor/mime';
           <div className="modal-body">
             <h2>Add A New Old Man Incident</h2>
             <form id="add-form">
-              <input type="hidden" name="injuryId" defaultValue={this.state.injury.id}/>
+              <input type="hidden" name="id" defaultValue={this.state.injury.id}/>
               <textarea name="description" placeholder="Tell us your sad, old man story..." required 
                 value={this.state.injury.description} onChange={this.change}></textarea>
             </form>
@@ -78,46 +75,32 @@ import Mime from 'rest/interceptor/mime';
       this.addInjury = this.addInjury.bind(this);
     }
 
+    _onChange() {
+      this.setState({ injuries: InjuryStore.getInjuries() });
+    }
+
     componentDidMount() {
-      var that = this;
-      rest('injuries').then(function(response) {
-        that.setState({injuries: response.entity});
-      });
+      InjuryStore.addChangeListener(this._onChange);
+    }
+
+    componentWillUnmount() {
+      InjuryStore.removeChangeListener(this._onChange);
     }
 
     addInjury(evt) {
-      var form  = document.getElementById('add-form'),
+      let form  = document.getElementById('add-form'),
           data  = serialize(form),
           that  = this;
 
-      var promise = null;
       if (data.injuryId && data.injuryId !== '0') {
-        promise = rest({
-          method: 'PUT',
-          path: 'injuries/' + data.injuryId,
-          entity: data
-        });
+        InjuryActions.saveInjury(data);
       } else {
-        promise = rest({
-          path: 'injuries',
-          entity: data
-        });
+        InjuryActions.addInjury(data);
       }
-
-      promise.then(function(response) {
-          rest('injuries').then(function(response) {
-            that.setState({injuries: response.entity});
-            that.modal.close();
-          });
-        })
-        .catch(function(response) {
-          alert(response.status.text);
-          that.modal.close();
-        });
     }
 
     showModal(evt) {
-      var modalDiv = document.getElementById('modal'),
+      let modalDiv = document.getElementById('modal'),
           id = evt.target.dataset.injuryId;
 
       // Clear previous modal data if there is any...
@@ -125,28 +108,22 @@ import Mime from 'rest/interceptor/mime';
         modalDiv.removeChild(modalDiv.firstChild);
       }
       this.modal = new Bootstrap.Modal(modalDiv);
-      ReactDOM.render(<Add onClick={this.addInjury} injuryId={id}/>, modalDiv);
+      let injury = this.injuries.find((injury) => {
+        return id === injury.id;
+      });
+      ReactDOM.render(<Add onClick={this.addInjury} injury={injury}/>, modalDiv);
       this.modal.open();
     }
 
     removeInjury(evt) {
-      var that = this,
-          id = evt.target.dataset.itemId;
+      let id = evt.target.dataset.itemId;
 
       evt.preventDefault();
-      rest({
-        path: 'injuries/' + id,
-        method: 'DELETE'
-      }).then(function(response) {
-        rest('injuries').then(function(response) {
-          that.setState({injuries: response.entity});
-        });
-      });
+      InjuryActions.removeInjury({injury: {id: id}});
     }
 
     render() {
-      var that = this;
-      var injuries = this.state.injuries.map(
+      let injuries = this.state.injuries.map(
         (item) => {
           return (
             <div className="row" key={item.id}>
@@ -156,7 +133,7 @@ import Mime from 'rest/interceptor/mime';
                 <span className="date">{Moment(item.createdAt).fromNow()}</span>
               </div>
               <div className="col-xs-1">
-                <a href data-item-id={item.id} onClick={that.removeInjury} title="Delete?">&times;</a>
+                <a href data-item-id={item.id} onClick={this.removeInjury} title="Delete?">&times;</a>
               </div>
             </div>
           );
