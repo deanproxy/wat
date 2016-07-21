@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { InjuryActions } from './actions/InjuryActions';
-import { InjuryStore } from './stores/InjuryStore';
+import InjuryActions from './actions/InjuryActions';
+import InjuryStore from './stores/InjuryStore';
 
 import Bootstrap from 'bootstrap.native';
 import Moment from 'moment';
@@ -68,7 +68,7 @@ import Moment from 'moment';
       // we have to set it up properly.
       super(props);
       this.state = {
-        injuries: []
+        injuries: InjuryStore.getInjuries()
       }
       this.removeInjury = this.removeInjury.bind(this);
       this.showModal = this.showModal.bind(this);
@@ -80,7 +80,7 @@ import Moment from 'moment';
     }
 
     componentDidMount() {
-      InjuryStore.addChangeListener(this._onChange);
+      InjuryStore.addChangeListener(this._onChange.bind(this));
     }
 
     componentWillUnmount() {
@@ -89,14 +89,15 @@ import Moment from 'moment';
 
     addInjury(evt) {
       let form  = document.getElementById('add-form'),
-          data  = serialize(form),
-          that  = this;
+          data  = serialize(form);
 
       if (data.injuryId && data.injuryId !== '0') {
         InjuryActions.saveInjury(data);
       } else {
         InjuryActions.addInjury(data);
       }
+
+      this.modal.close();
     }
 
     showModal(evt) {
@@ -108,7 +109,7 @@ import Moment from 'moment';
         modalDiv.removeChild(modalDiv.firstChild);
       }
       this.modal = new Bootstrap.Modal(modalDiv);
-      let injury = this.injuries.find((injury) => {
+      let injury = this.state.injuries.find((injury) => {
         return id === injury.id;
       });
       ReactDOM.render(<Add onClick={this.addInjury} injury={injury}/>, modalDiv);

@@ -1,6 +1,6 @@
 import { Dispatcher } from 'flux';
-import { InjuryConstants } from '../constants/InjuryConstants';
-import { InjuryStore } from '../stores/InjuryStore';
+import InjuryConstants from '../constants/InjuryConstants';
+import InjuryStore from '../stores/InjuryStore';
 
 class InjuryDispatcherClass extends Dispatcher {
 

@@ -1,40 +1,27 @@
 import { EventEmitter } from 'events';
-import Rest from 'rest';
-import Mime from 'rest/interceptor/mime';
 
 
 class InjuryStoreClass extends EventEmitter {
   constructor() {
     super();
-    this.rest = Rest.wrap(Mime, {mime: 'application/json'});
     this.injuries = [];
-    this.getInjuries();
+  }
+
+  setInjuries(injuries) {
+    this.injuries = injuries;
   }
 
   getInjuries() {
-    this.rest('/injuries').then((response) => {
-      this.injuries = response.entity;
-    });
     return this.injuries;
   }
 
   addInjury(injury) {
-    this.rest({
-      path: '/injuries',
-      entity: injury
-    }).then((response) => {
-      this.injuries.push(injury);
-    });
+    this.injuries.push(injury);
   }
 
   removeInjury(injury) {
-    this.rest({
-      method: 'DELETE',
-      path: `/injuries/${injury.id}`
-    }).then((response) => {
-      this.injuries = this.injuries.filter((item, index) => {
-        return item.id !== injury.id;
-      });
+    this.injuries = this.injuries.filter((item, index) => {
+      return item.id !== injury.id;
     });
   }
 
@@ -55,5 +42,6 @@ class InjuryStoreClass extends EventEmitter {
   }
 }
 
-export const InjuryStore = new InjuryStoreClass();
+const InjuryStore = new InjuryStoreClass();
+export default InjuryStore;
 

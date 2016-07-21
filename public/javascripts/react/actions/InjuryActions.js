@@ -1,11 +1,21 @@
-import { InjuryDispatcher } from '../dispatchers/InjuryDispatcher';
-import { InjuryConstants } from '../constants/InjuryConstants';
+import InjuryDispatcher from '../dispatchers/InjuryDispatcher';
+import InjuryConstants from '../constants/InjuryConstants';
+
+import Rest from 'rest';
+import Mime from 'rest/interceptor/mime';
+
+let rest = Rest.wrap(Mime, {mime: 'application/json'});
 
 export default class InjuryActions {
   static addInjury(injury) {
-    InjuryDispatcher.handleViewAction({
-      actionType: InjuryConstants.ADD_INJURY,
-      injury: injury
+    rest({
+      path: '/injuries',
+      entity: injury
+    }).then((response) => {
+      InjuryDispatcher.handleViewAction({
+        actionType: InjuryConstants.ADD_INJURY,
+        injury: injury
+      });
     });
   }
 
@@ -17,15 +27,22 @@ export default class InjuryActions {
   }
 
   static removeInjury(injury) {
-    InjuryDispatcher.handleViewAction({
-      actionType: InjuryConstants.REMOVE_INJURY,
-      injury: injury
+    rest({
+      method: 'DELETE',
+      path: `/injuries/${injury.id}`
+    }).then((response) => {
+      InjuryDispatcher.handleViewAction({
+        actionType: InjuryConstants.REMOVE_INJURY,
+        injury: injury
+      });
     });
   }
 
   static getAllInjuries() {
-    InjuryDispatcher.handleViewAction({
-      actionType: InjuryConstants.LOAD_INJURIES
+    rest('/injuries').then((response) => {
+      InjuryDispatcher.handleViewAction({
+        actionType: InjuryConstants.LOAD_INJURIES
+      });
     });
   }
 }
