@@ -23,7 +23,13 @@ import Moment from 'moment';
       super(props);
       this.change = this.change.bind(this);
       this.state = {
-        injury: this.props.injury
+        injury: {
+          id: 0,
+          description: ''
+        }
+      }
+      if (this.props.injury) {
+        this.state.injury = this.props.injury;
       }
     }
 
