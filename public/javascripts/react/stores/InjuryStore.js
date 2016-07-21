@@ -16,7 +16,7 @@ class InjuryStoreClass extends EventEmitter {
   }
 
   addInjury(injury) {
-    this.injuries.push(injury);
+    this.injuries.unshift(injury);
   }
 
   removeInjury(injury) {
@@ -26,7 +26,17 @@ class InjuryStoreClass extends EventEmitter {
   }
 
   updateInjury(injury) {
-    // update.
+    // Find an index for this particular injury id
+    let indexes = this.injuries.map((inj, idx) => {
+      if (inj.id === injury.id) {
+        return idx;
+      }
+    }).filter(isFinite); // Removes any 'undefined' items from the array
+
+    if (indexes.length) {
+      let idx = indexes[0];
+      this.injuries[idx] = injury;
+    }
   }
 
   emitChange() {

@@ -23,22 +23,13 @@ import Moment from 'moment';
       super(props);
       this.change = this.change.bind(this);
       this.state = {
-        injury: {
-          id: 0,
-          description: ''
-        }
-      }
-    }
-
-    componentDidMount() {
-      if (this.props.injury) {
-        this.state.injury = this.props.injury;
+        injury: this.props.injury
       }
     }
 
     change(evt) {
       this.state.injury.description = evt.target.value;
-      this.setState({injury: this.state.injury});
+      this.setState(this.state);
     }
 
     render() {
@@ -73,6 +64,7 @@ import Moment from 'moment';
       this.removeInjury = this.removeInjury.bind(this);
       this.showModal = this.showModal.bind(this);
       this.addInjury = this.addInjury.bind(this);
+      InjuryActions.getAllInjuries();
     }
 
     _onChange() {
@@ -91,7 +83,7 @@ import Moment from 'moment';
       let form  = document.getElementById('add-form'),
           data  = serialize(form);
 
-      if (data.injuryId && data.injuryId !== '0') {
+      if (data.id && data.id !== '0') {
         InjuryActions.saveInjury(data);
       } else {
         InjuryActions.addInjury(data);
@@ -109,9 +101,7 @@ import Moment from 'moment';
         modalDiv.removeChild(modalDiv.firstChild);
       }
       this.modal = new Bootstrap.Modal(modalDiv);
-      let injury = this.state.injuries.find((injury) => {
-        return id === injury.id;
-      });
+      let injury = this.state.injuries.find((injury) => id == injury.id);
       ReactDOM.render(<Add onClick={this.addInjury} injury={injury}/>, modalDiv);
       this.modal.open();
     }
@@ -120,7 +110,7 @@ import Moment from 'moment';
       let id = evt.target.dataset.itemId;
 
       evt.preventDefault();
-      InjuryActions.removeInjury({injury: {id: id}});
+      InjuryActions.removeInjury({id: id});
     }
 
     render() {
@@ -128,12 +118,12 @@ import Moment from 'moment';
         (item) => {
           return (
             <div className="row" key={item.id}>
-              <div className="col-xs-11 description" onClick={this.showModal} data-injury-id={item.id}>
+              <div className="col-xs-11 col-md-11 description" onClick={this.showModal} data-injury-id={item.id}>
                 <span className="fa fa-wheelchair"></span>
                 {item.description}
                 <span className="date">{Moment(item.createdAt).fromNow()}</span>
               </div>
-              <div className="col-xs-1">
+              <div className="col-md-1 col-xs-1">
                 <a href data-item-id={item.id} onClick={this.removeInjury} title="Delete?">&times;</a>
               </div>
             </div>
@@ -142,11 +132,15 @@ import Moment from 'moment';
       );
       return (
         <div className="index">
-          <div className="actions">
-            <a className="btn btn-default" href="/logout">Logout</a>
-            <button className="btn btn-primary" onClick={this.showModal}>Add Old Man Incident</button>
+          <div className="container">
+            <div className="row">
+              <div className="actions col-xs-12 col-md-12">
+                <a className="btn btn-default" href="/logout">Logout</a>
+                <button className="btn btn-primary" onClick={this.showModal}>Add Old Man Incident</button>
+              </div>
+            </div>
           </div>
-          <div className="container-fluid">
+          <div className="container">
             {injuries}
           </div>
         </div>

@@ -16,14 +16,17 @@ body {
         &:last-child {
             border-bottom: none;
         }
-        a {
-            position: absolute;
+        a:not(.btn) {
+            float: right;
             color: #666;
             right: 10px;
             &:hover {
                 text-decoration: none;
                 color: #e74c3c;
             }
+        }
+        a.btn {
+            float: left;
         }
 
         span {
@@ -42,11 +45,16 @@ body {
                 display: inline-block;
             }
         }
+        .actions {
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 }
 
 .login {
     padding: 20px;
+    width: 300px;
     border: 1px solid #999; 
     margin: 20px auto;
     border-radius: 5px;
@@ -77,10 +85,6 @@ body {
     margin-bottom: 20px;
     padding: 0 25px;
 }
-.actions a {
-    float: left;
-}
-
 .modal-dialog form textarea {
     width: 100%;
     height: 100px;
@@ -96,4 +100,7 @@ body {
     .index .row {
         padding: 5px;
     }
+    .login {
+        width: 100%;
+}
 }
